@@ -22,16 +22,34 @@ class SigninParse
     return false if (options.class.to_s != "Hash")
     return false if (
       url.class.to_s != "String" ||
-      options[:login].class.to_s != "String" ||
-      options[:password].class.to_s != "String" ||
       options[:login_field_name].class.to_s != "String" ||
+      options[:login].class.to_s != "String" ||
       options[:password_field_name].class.to_s != "String" ||
+      options[:password].class.to_s != "String" ||
       options[:submit_name].class.to_s != "String" ||
       options[:submit].class.to_s != "String"
     )
     return false if !(URI.parse(url).kind_of?(URI::HTTP))
-
-    @browser.visit(url)
+    begin
+      @browser.visit(url)
+    rescue Selenium::WebDriver::Error::UnknownError # Any visit error
+      return false
+    end
+    begin
+      @browser.find_field(options[:login_field_name])
+    rescue Capybara::ElementNotFound
+      return false
+    end
+    begin
+      @browser.find_field(options[:password_field_name])
+    rescue Capybara::ElementNotFound
+      return false
+    end
+    begin
+      @browser.find_button(options[:submit_name])
+    rescue Capybara::ElementNotFound
+      return false
+    end
     @browser.fill_in(options[:login_field_name], with: options[:login])
     @browser.fill_in(options[:password_field_name], with: options[:password])
     @browser.click_button(options[:submit])
