@@ -56,11 +56,32 @@ class SigninParse
   end
 
   def parse(class_to_parse = "", options = {})
-    @browser.choose(options[:radio_id])
     parsed_content = []
-    @browser.all(:css, '.' + class_to_parse).map do |el|
-      parsed_content.push(el.text)
+    begin
+      @browser.choose(options[:radio_id])
+    rescue Capybara::ElementNotFound
+      return parsed_content
+    end
+    begin
+      @browser.all(:css, '.' + class_to_parse).map do |el|
+        parsed_content.push(el.text)
+      end
+    rescue Capybara::ElementNotFound
+      return parsed_content
     end
     parsed_content
   end
+
+  def sign_out(options = {})
+    if options[:exit].class.to_s == "String"
+      begin
+        @browser.click_link(options[:exit])
+      rescue Capybara::ElementNotFound
+        false
+      end
+    else
+      false
+    end
+  end
+
 end
