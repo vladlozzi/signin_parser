@@ -1,28 +1,25 @@
 Клас, за допомогою якого можна залогінитися на сайті 
-та зібрати в масив тексти елементів із певним CSS-класом,
+catalogs.vladloz.pp.ua та зібрати в масив тексти елементів із певним CSS-класом,
 наприклад, TeacherContact (контакти викладачів) 
 або TeacherSubject (дисципліни, які викладачі ведуть).
 
 # Методи
 
-sign_in(url, sign_options)
+sign_in(url, login, password, enter)
 
 Для залогінювання на сайті;
-повертає false, якщо неможливо залогінитися з будь-якої
-причини.
+повертає false, якщо неможливо відкрити сайт.
 
-parse(class_to_parse, parse_options)
+parse(class_to_parse, radio)
 
 Для збирання в масив елементів з певним класом
-на веб-сторінці після залогінювання;
+на веб-сторінці після залогінювання і вибору радіокнопки;
 повертає масив рядків, якщо зібрано успішно, 
 в іншому разі - порожній масив.
 
-sign_out(exit_options)
+sign_out(quit)
 
-Для вилогінювання з сайту; 
-повертає false, якщо неможливо вилогінитися 
-з будь-якої причини.
+Для вилогінювання з сайту. 
 
 # Приклад використання
 
@@ -31,26 +28,14 @@ sign_out(exit_options)
 
 url = 'https://catalogs.vladloz.pp.ua'
 
-sign_options = Hash.new
+login = 'teacher_128'
 
-sign_options[:login_field_name] = 'login'
+password = 'teacher_128_pass'
 
-sign_options[:login] = 'teacher_128'
-
-sign_options[:password_field_name] = 'psswd'
-
-sign_options[:password] = 'teacher_128_pass'
-
-sign_options[:submit_name] = 'enter'
-
-sign_options[:submit] = 'Вхід'
+enter = 'Вхід'
 
 signin_parse = SigninParse.new
 
-signin_parse.sign_in url, sign_options
+signin_parse.sign_in url, login, password, enter
 
-parse_options = Hash.new
-
-parse_options[:radio_id] = 'depart_subj_spring'
-
-p signin_parse.parse "TeacherSubject", parse_options
+p signin_parse.parse 'TeacherSubject', ''
