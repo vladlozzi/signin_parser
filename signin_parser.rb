@@ -30,7 +30,7 @@ class SigninParse
   end
 
   def parse
-    @browser.choose('')
+    @browser.choose('depart_subj_spring')
     @browser.all(:css, '.TeacherSubjects').map do |elem|
       elem.text
     end
