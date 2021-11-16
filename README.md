@@ -10,9 +10,9 @@ sign_in(url, login, password, enter)
 Для залогінювання на сайті;
 повертає false, якщо неможливо відкрити сайт.
 
-parse(class_to_parse, radio)
+parse
 
-Для збирання в масив елементів з певним класом
+Для збирання в масив елементів з класом "TeacherSubject"
 на веб-сторінці після залогінювання і вибору радіокнопки;
 повертає масив рядків, якщо зібрано успішно, 
 в іншому разі - порожній масив.
@@ -38,4 +38,4 @@ signin_parse = SigninParse.new
 
 signin_parse.sign_in url, login, password, enter
 
-p signin_parse.parse 'TeacherSubject', ''
+p signin_parse.parse
