@@ -11,7 +11,7 @@ class SigninParse
     end
     Capybara.javascript_driver = :chrome
     Capybara.configure do |config|
-      config.default_max_wait_time = 10 # seconds
+      config.default_max_wait_time = 15 # seconds
       config.default_driver = :selenium
     end
     @browser = Capybara.current_session
@@ -26,11 +26,12 @@ class SigninParse
     @browser.fill_in('login', with: login)
     @browser.fill_in('password', with: password)
     @browser.click_button(enter)
+    @browser
   end
 
-  def parse(class_to_parse = "", radio = "")
-    @browser.choose(radio)
-    @browser.all(:css, '.' + class_to_parse).map do |elem|
+  def parse(**options)
+    @browser.choose(options[:radio])
+    @browser.all(:css, '.' + options[:class_to_parse]).map do |elem|
       elem.text
     end
   end
@@ -38,4 +39,4 @@ class SigninParse
   def sign_out(quit = "")
     @browser.click_link(quit)
   end
-end
+end q

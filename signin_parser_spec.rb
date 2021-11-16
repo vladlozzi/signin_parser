@@ -12,20 +12,32 @@ describe SigninParse do
     @quit = "Вийти"
   end
 
-  it "should be signed in, parsed and signed_out" do
+  it "should be signed in and sign out" do
     signed = @signin_parse.sign_in(@url, @login, @password, @enter)
-    expect(signed.class).to eq Capybara::Node::Element
-    parsed_items = @signin_parse.parse("TeacherSubject", @radio)
+    expect(signed.class).to eq Capybara::Session
+    expect(signed.find('a', text: @quit).class).to eq Capybara::Node::Element
+    @signin_parse.sign_out(@quit)
+    expect(signed.find_button(@enter).class).to eq Capybara::Node::Element
+  end
+
+  it "should be valid login and password" do
+    signed = @signin_parse.sign_in(@url, '', '', @enter)
+    begin
+      quit_found = signed.find('a', text: @quit)
+    rescue Capybara::ElementNotFound
+      quit_found = false
+    end
+    expect(quit_found.class).to eq FalseClass
+  end
+
+  it "should be parsed subjects" do
+    @signin_parse.sign_in(@url, @login, @password, @enter)
+    parsed_items = @signin_parse.parse(radio: @radio, class_to_parse: "TeacherSubject")
     expect(parsed_items.size).to eq 69
     parsed_items.each do |item|
       expect(item).to match /^Дисципліна_.+/
     end
     @signin_parse.sign_out(@quit)
-  end
-
-  it "should be valid login and password" do
-    signed = @signin_parse.sign_in(@url, '', '', @enter)
-    expect(signed.class).to eq Capybara::Node::Element
   end
 
 end
