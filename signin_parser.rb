@@ -39,4 +39,4 @@ class SigninParse
   def sign_out(quit = "")
     @browser.click_link(quit)
   end
-end q
+end
