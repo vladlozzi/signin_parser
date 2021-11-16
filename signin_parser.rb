@@ -29,9 +29,9 @@ class SigninParse
     @browser
   end
 
-  def parse(**options)
-    @browser.choose(options[:radio])
-    @browser.all(:css, '.' + options[:class_to_parse]).map do |elem|
+  def parse
+    @browser.choose('')
+    @browser.all(:css, '.TeacherSubjects').map do |elem|
       elem.text
     end
   end
