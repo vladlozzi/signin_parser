@@ -4,6 +4,9 @@ require 'capybara'
 
 class SigninParse
 
+  class VisitError < StandardError; end
+  class SigninFailedError < StandardError; end
+
   URL = "https://catalogs.vladloz.pp.ua"
   ENTER = "Вхід"
   QUIT = "Вийти"
@@ -23,14 +26,11 @@ class SigninParse
   end
 
   def sign_in(login = "", password = "")
-    if visit_ok?
-      @page.fill_in('login', with: login)
-      @page.fill_in('password', with: password)
-      @page.click_button(ENTER)
-      signed_in?
-    else
-      false
-    end
+    return VisitError unless visit_ok?
+    @page.fill_in('login', with: login)
+    @page.fill_in('password', with: password)
+    @page.click_button(ENTER)
+    signed_in? ? @page : SigninFailedError
   end
 
   def parse_subjects

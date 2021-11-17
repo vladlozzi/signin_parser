@@ -29,7 +29,7 @@ describe SigninParse do
 
   it "should be valid login and password" do
     signed = @signin_parse.sign_in('', '')
-    expect(signed.class).to eq FalseClass
+    expect(signed).to eq SigninParse::SigninFailedError
   end
 
 end
