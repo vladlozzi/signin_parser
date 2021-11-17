@@ -3,6 +3,11 @@ require 'selenium-webdriver'
 require 'capybara'
 
 class SigninParse
+
+  URL = "https://catalogs.vladloz.pp.ua"
+  ENTER = "Вхід"
+  QUIT = "Вийти"
+
   def initialize
     super
     # Configurations
@@ -14,36 +19,49 @@ class SigninParse
       config.default_max_wait_time = 15 # seconds
       config.default_driver = :selenium
     end
-    @browser = Capybara.current_session
+    @page = Capybara.current_session
   end
 
-  def sign_in(url = "", login = "", password = "", enter = "", quit = "")
-    begin
-      @browser.visit(url)
-    rescue Selenium::WebDriver::Error::InvalidArgumentError # URL error
-      return "URL #{url} is invalid"
-    rescue Selenium::WebDriver::Error::UnknownError # Any visit error
-      return "Visit error for #{url}"
+  def sign_in(login = "", password = "")
+    if visit_ok?
+      @page.fill_in('login', with: login)
+      @page.fill_in('password', with: password)
+      @page.click_button(ENTER)
+      signed_in?
+    else
+      false
     end
-    @browser.fill_in('login', with: login)
-    @browser.fill_in('password', with: password)
-    @browser.click_button(enter)
-    begin
-      @browser.find('a', text: quit)
-    rescue Capybara::ElementNotFound
-      return "Login/password combination is invalid"
-    end
-    @browser
   end
 
   def parse_subjects
-    @browser.choose('depart_subj_spring')
-    @browser.all(:css, '.TeacherSubject').map do |elem|
+    @page.choose('depart_subj_spring')
+    @page.all(:css, '.TeacherSubject').map do |elem|
       elem.text
     end
   end
 
-  def sign_out(quit = "")
-    @browser.click_link(quit)
+  def sign_out
+    @page.click_link(QUIT)
+    signed_out?
   end
+
+  private
+
+  def visit_ok?
+    begin
+      @page.visit(URL)
+      true
+    rescue Selenium::WebDriver::Error::UnknownError # Any visit error
+      false
+    end
+  end
+
+  def signed_in?
+    (@page.has_link?(QUIT) && @page.has_css?('#depart_subj_spring')) ? @page : false
+  end
+
+  def signed_out?
+    @page.has_button?(ENTER)
+  end
+
 end
