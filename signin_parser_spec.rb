@@ -12,26 +12,30 @@ describe SigninParse do
   end
 
   it "should be signed in and sign out" do
-    signed = @signin_parse.sign_in(@url, @login, @password, @enter)
+    signed = @signin_parse.sign_in(@url, @login, @password, @enter, @quit)
     expect(signed.class).to eq Capybara::Session
     expect(signed.find('a', text: @quit).class).to eq Capybara::Node::Element
     @signin_parse.sign_out(@quit)
     expect(signed.find_button(@enter).class).to eq Capybara::Node::Element
   end
 
-  it "should be valid login and password" do
-    signed = @signin_parse.sign_in(@url, '', '', @enter)
-    begin
-      quit_found = signed.find('a', text: @quit)
-    rescue Capybara::ElementNotFound
-      quit_found = false
-    end
-    expect(quit_found.class).to eq FalseClass
+  it "should be valid url, login and password" do
+    bad_url = "abra-kad.abra"
+    signed = @signin_parse.sign_in(bad_url, '', '', @enter, @quit)
+    expect(signed.class).to eq String
+    expect(signed).to eq "URL #{bad_url} is invalid"
+    visit_error_url = "http://abrakadabra.vladloz.pp.ua"
+    signed = @signin_parse.sign_in(visit_error_url, '', '', @enter, @quit)
+    expect(signed.class).to eq String
+    expect(signed).to eq "Visit error for #{visit_error_url}"
+    signed = @signin_parse.sign_in(@url, '', '', @enter, @quit)
+    expect(signed.class).to eq String
+    expect(signed).to eq "Login/password combination is invalid"
   end
 
   it "should be parsed subjects" do
     @signin_parse.sign_in(@url, @login, @password, @enter)
-    parsed_items = @signin_parse.parse
+    parsed_items = @signin_parse.parse_subjects
     expect(parsed_items.size).to eq 69
     parsed_items.each do |item|
       expect(item).to match /^Дисципліна_.+/

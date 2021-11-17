@@ -17,19 +17,26 @@ class SigninParse
     @browser = Capybara.current_session
   end
 
-  def sign_in(url = "", login = "", password = "", enter = "")
+  def sign_in(url = "", login = "", password = "", enter = "", quit = "")
     begin
       @browser.visit(url)
+    rescue Selenium::WebDriver::Error::InvalidArgumentError # URL error
+      return "URL #{url} is invalid"
     rescue Selenium::WebDriver::Error::UnknownError # Any visit error
-      return false
+      return "Visit error for #{url}"
     end
     @browser.fill_in('login', with: login)
     @browser.fill_in('password', with: password)
     @browser.click_button(enter)
+    begin
+      @browser.find('a', text: quit)
+    rescue Capybara::ElementNotFound
+      return "Login/password combination is invalid"
+    end
     @browser
   end
 
-  def parse
+  def parse_subjects
     @browser.choose('depart_subj_spring')
     @browser.all(:css, '.TeacherSubject').map do |elem|
       elem.text
