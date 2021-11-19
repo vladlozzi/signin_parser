@@ -1,23 +1,23 @@
 Клас, за допомогою якого можна залогінитися на сайті 
-catalogs.vladloz.pp.ua та зібрати в масив тексти елементів із певним CSS-класом,
-наприклад, TeacherContact (контакти викладачів) 
-або TeacherSubject (дисципліни, які викладачі ведуть).
+catalogs.vladloz.pp.ua та зібрати в масив 
+тексти елементів із CSS-класом 
+TeacherSubject (дисципліни, які ведуть викладачі кафедри).
 
 # Методи
 
-sign_in(url, login, password, enter)
+sign_in(login, password)
 
-Для залогінювання на сайті;
-повертає false, якщо неможливо відкрити сайт.
+Для залогінювання на сайті; повертає false, якщо неможливо 
+відкрити сайт або залогінитися.
 
-parse
+parse_subjects
 
 Для збирання в масив елементів з класом "TeacherSubject"
 на веб-сторінці після залогінювання і вибору радіокнопки;
 повертає масив рядків, якщо зібрано успішно, 
 в іншому разі - порожній масив.
 
-sign_out(quit)
+sign_out
 
 Для вилогінювання з сайту. 
 
@@ -26,16 +26,12 @@ sign_out(quit)
 Залогінитися на сайті як викладач і вибрати всі дисципліни, 
 які веде його кафедра у весняному семестрі.
 
-url = 'https://catalogs.vladloz.pp.ua'
-
 login = 'teacher_128'
 
 password = 'teacher_128_pass'
 
-enter = 'Вхід'
-
 signin_parse = SigninParse.new
 
-signin_parse.sign_in url, login, password, enter
+signin_parse.sign_in login, password
 
-p signin_parse.parse
+p signin_parse.parse_subjects
